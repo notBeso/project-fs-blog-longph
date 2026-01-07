@@ -24,10 +24,10 @@
                         <td>{{ $locationIdsToTexts(blog.position, locations) }}</td>
                         <td>{{ blog.data_public }}</td>
                         <td>
-			    <EditBlogButton :blogId="blog.id" />
+			                <EditBlogButton :blogId="blog.id" />
                         </td>
                         <td>
-			    <DeleteBlogButton :blogId="blog.id" :afterDeleteCallback="removeFromBlogs"/>
+			                <DeleteBlogButton :blogId="blog.id" :afterDeleteCallback="removeFromBlogs"/>
                         </td>
                     </tr>
                 </tbody>

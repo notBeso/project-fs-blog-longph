@@ -42,6 +42,7 @@
                 </span>
             </div>
 
+            {{ isRemoveThumbs }}
             <form @submit.prevent>
                 <input
                     ref="fileInput"
@@ -129,8 +130,7 @@
     import { RouterLink, useRoute, useRouter } from 'vue-router';
 
     const { $getLocations, $getOptions } = useNuxtApp()
-    const fileInput = ref(null)
-    const selectedFile = ref(null)
+    
 
     const route = useRoute();
     const router = useRouter()
@@ -139,7 +139,8 @@
 
     const options = ref(await $getOptions())
     const locations = ref(await $getLocations())
-
+    // const fileInput = ref(null)
+    const selectedFile = ref(null)
     const validationSchema = yup.object({
         title: yup.string().required('title is required').min(5, 'Name must be at least 5 characters'),
         describe: yup.string().required('describe is required').min(10, 'Name must be at least 10 characters'),
@@ -155,6 +156,7 @@
             title: item.value.title,
             describe: item.value.des,
             detail: item.value.detail,
+            fileInput: item.value.thumbs,
             selectedLocation: item.value.position,
             publicity: item.value.public,
             category: item.value.category,
@@ -166,6 +168,7 @@
     const { value: title } = useField('title')
     const { value: describe } = useField('describe')
     const { value: detail } = useField('detail')
+    const { value: fileInput } = useField('fileInput')
     const { value: selectedLocation } = useField('selectedLocation')
     const { value: publicity } = useField('publicity')
     const { value: category } = useField('category')
@@ -203,32 +206,37 @@
         isRemoveThumbs.value = !item.value.thumbs_url
     }
 
-    const updateBlog = async () => {
+    const updateBlog = handleSubmit(()  => {
         try {
-	    const formData = new FormData()
+            const formData = new FormData()
 
-        formData.append("title", title.value)
-        formData.append("des", describe.value)
-        formData.append("detail", detail.value)
-        formData.append("category", category.value)
-        formData.append("public", publicity.value)
-        formData.append("data_public", DateSelect.value)
+            formData.append("title", title.value)
+            formData.append("des", describe.value)
+            formData.append("detail", detail.value)
+            formData.append("category", category.value)
+            formData.append("public", publicity.value)
+            formData.append("data_public", DateSelect.value)
+            selectedLocation.value.forEach((pos) => formData.append("position[]", pos))
+            formData.append("isRemoveThumbs", isRemoveThumbs.value)
 
-	    selectedLocation.value.forEach((pos) => formData.append("position[]", pos))
-        formData.append("isRemoveThumbs", isRemoveThumbs.value)
-
-	    if(isRemoveThumbs.value && selectedFile.value) {
-		    formData.append("thumbs", selectedFile.value)
-	    }
+            if(isRemoveThumbs.value && selectedFile.value) {
+                // alert('add')
+                formData.append("thumbs", selectedFile.value)
+            }else if(isRemoveThumbs.value && !selectedFile.value){
+                // alert('del')
+            } else{
+                // alert('keep')
+                formData.append('thumbs', fileInput.value)
+            }
+            item.value = ( axios.put(`http://localhost:8000/api/blogs/${blogId}`, formData)).data;
+            router.push('/');
             
-        item.value = (await axios.put(`http://localhost:8000/api/blogs/${blogId}`, formData)).data;
-	    alert('Success')
-        router.push('/');
-	    initStatesForItem()
         } catch (error) {
-            alert('Error:', error)
+            alert('Error: please check ur input')
         }
-    }
+        initStatesForItem();
+        
+    })
 </script>
 
 <style scoped>

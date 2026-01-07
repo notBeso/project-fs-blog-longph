@@ -7,9 +7,19 @@ use App\Models\Blog;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+// use Illuminate\Support\Facades\Redirect;
 
 class BlogController
 {
+    public function checkThumbs(Request $request) {
+        $thumbs = $request->thumbs;
+        $newFileName = null;
+        if(!is_null($thumbs)) {
+            $newFileName = Str::uuid()->toString() . '.' . $thumbs->extension();
+            Storage::disk('public')->put($newFileName, $thumbs->get());
+	    }
+        return $newFileName;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -24,13 +34,15 @@ class BlogController
     public function store(Request $request)
     {
         $blog = new Blog;
-	$newFileName = null;
-	$thumbs = $request->thumbs;
+        $newFileName = null;
 
-	if(!is_null($thumbs)) {
-            $newFileName = Str::uuid()->toString() . '.' . $thumbs->extension();
-	    Storage::disk('public')->put($newFileName, $thumbs->get());
-	}
+        //1
+        // $thumbs = $request->thumbs;
+        // if(!is_null($thumbs)) {
+        //     $newFileName = Str::uuid()->toString() . '.' . $thumbs->extension();
+        //     Storage::disk('public')->put($newFileName, $thumbs->get());
+	    // }
+
 
         $blog->title = $request->title;
         $blog->des = $request->des;
@@ -39,8 +51,7 @@ class BlogController
         $blog->public = $request->public;
         $blog->data_public = $request->data_public;
         $blog->position = $request->position;
-
-	$blog->thumbs = $newFileName;
+	    $blog->thumbs = $this->checkThumbs($request);;
 
         $blog->save();
 
@@ -75,16 +86,19 @@ class BlogController
         }
 
 	    $newFileName = null;
-        $thumbs = $request->thumbs;
 
-        if(!is_null($thumbs)) {
-            $newFileName = Str::uuid()->toString() . '.' . $thumbs->extension();
-            Storage::disk('public')->put($newFileName, $thumbs->get());
-	}
+        //1
+        // $thumbs = $request->thumbs;
+        // if(!is_null($thumbs)) {
+        //     $newFileName = Str::uuid()->toString() . '.' . $thumbs->extension();
+        //     Storage::disk('public')->put($newFileName, $thumbs->get());
+	    // }
+        //2
+        $newFileName = $this->checkThumbs($request);
 
-	if(!is_null($newFileName)) {
-	    $blog->thumbs = $newFileName;
-	}
+        if(!is_null($newFileName)) {
+            $blog->thumbs = $newFileName;
+        }
 
         $blog->save();
 
@@ -97,7 +111,11 @@ class BlogController
     public function destroy(string $id)
     {
         $blog = Blog::find($id);
-        $blog ->forceDelete();
+        if(is_null($blog)){
+            return redirect()->back()->withErrors(['message' => 'Blog not found.']);
+        }
+        $blog -> forceDelete();
+        // return Redirect::route('posts.index')->with('success', 'Blog deleted successfully!');
     }
 
     public function search(Request $request)
@@ -113,15 +131,17 @@ class BlogController
         	[ "id" => '2', "label" => 'Châu Á' ],
         	[ "id" => '3', "label" => 'Châu Âu' ],
         	[ "id" => '4', "label" =>'Châu Mỹ' ],
-	];
+	    ];
     }
 
     public function options() {
     	return [
-		[ "value" => '1', "label" => 'Kinh Doanh' ],
-		[ "value" => '2', "label" => 'Giải Trí' ],
-		[ "value" => '3', "label" => 'Thế Giới' ],
-		[ "value" => '4', "label" => 'Thời Sự' ],
-	];
+            [ "value" => '1', "label" => 'Kinh Doanh' ],
+            [ "value" => '2', "label" => 'Giải Trí' ],
+            [ "value" => '3', "label" => 'Thế Giới' ],
+            [ "value" => '4', "label" => 'Thời Sự' ],
+	    ];
     }
+
+
 }

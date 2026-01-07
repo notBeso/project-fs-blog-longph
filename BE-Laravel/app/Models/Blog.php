@@ -20,7 +20,7 @@ class Blog extends Model
     }
 
     protected function position() : Attribute {
-	return Attribute::set(fn ($pos) => is_null($pos) ? '[]' : json_encode($pos));
+	    return Attribute::set(fn ($pos) => is_null($pos) ? '[]' : json_encode($pos));
     }
 
     protected function thumbsUrl() : Attribute {

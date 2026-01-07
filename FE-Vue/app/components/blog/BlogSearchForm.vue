@@ -57,9 +57,7 @@
 
     .main-content {
         background-color: WhiteSmoke;
-        padding:0;
-        font-size: 30px;
-        
+        padding:0 0 20px 0;
     }
 
     .main-form-container {
@@ -125,7 +123,7 @@ const { $locationIdsToTexts, $getLocations } = useNuxtApp()
 
 const locations = await $getLocations()
 const query = ref('')
-const results = ref([])
+const results = ref((await axios.get('http://localhost:8000/api/blogs')).data)
 
 const performSearch = debounce(async () => {
 	if(!query.value) {

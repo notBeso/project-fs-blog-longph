@@ -13,12 +13,12 @@ const { blogId, afterDeleteCallback } = defineProps(['blogId', 'afterDeleteCallb
 const deleteItem = async() => {
 	if (confirm('Are you sure you want to delete this item?' + blogId)) {
         	try {
-                    await axios.delete(`http://localhost:8000/api/blogs/${blogId}/delete`);
-                    afterDeleteCallback(blogId)
+                        await axios.delete(`http://localhost:8000/api/blogs/${blogId}/delete`);
+                        afterDeleteCallback(blogId)
                 }
                 catch (error) {
-console.log(error)
-                    alert('Error deleting item:', error);
+                        console.log(error)
+                        alert('Error deleting item:', error);
                 }
         }
 }	

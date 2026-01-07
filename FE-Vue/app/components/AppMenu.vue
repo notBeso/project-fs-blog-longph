@@ -1,22 +1,22 @@
 
 <template>
-    <div>
+    <div style="padding-left: 5%;">
         <ul class="menu-bar">
             <li>
                 <NuxtLink to="/">
-                    <img src="./img/list.png"></img>
+                    <img src="../../img/list.png"></img>
                     List
                 </NuxtLink>
             </li>
             <li>
                 <NuxtLink to="/new">
-                    <img src="./img/plus.png" @click="editMode"></img>
+                    <img src="../../img/plus.png"></img>
                     New
                 </NuxtLink>
             </li>
             <li>
                 <NuxtLink to="/search">
-                    <img src="./img/loupe.png"></img>
+                    <img src="../../img/loupe.png"></img>
                     Search
                 </NuxtLink>
             </li>
@@ -24,7 +24,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
     .menu-bar{
        min-height: 100vh;
     }
@@ -32,7 +32,7 @@
     ul {
         list-style: none;
         text-align: left;
-        padding-left: 20px;
+        
     }
 
     a {

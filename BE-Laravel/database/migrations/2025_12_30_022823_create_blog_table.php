@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('category');
             $table->boolean('public');
             $table->string('data_public');
-            $table->text('position')->nullable(); //json (array)
-            $table->text('thumbs')->nullable(); //string or text
+            $table->text('position');
+            $table->text('thumbs')->nullable();
             $table->id('id');
         });
     }

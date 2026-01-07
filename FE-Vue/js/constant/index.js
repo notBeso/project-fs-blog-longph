@@ -5,6 +5,7 @@ import ListPage from '../app/pages/index.vue';
 import SearchPage from '../pages/search.vue';
 import NewPage from '../pages/new.vue';
 import EditPage from '../pages/edit.vue';
+import TestPage from '../pages/test.vue';
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
@@ -35,6 +36,13 @@ const routes = [
         name: 'EP',
         component: EditPage,
         props: true
+        },
+
+        // TEST
+        {
+        path: '/test',
+        name: 'test',
+        component: TestPage,
         },
     ],
     },

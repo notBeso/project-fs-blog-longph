@@ -122,16 +122,19 @@
     import { ref } from 'vue'
     import { useForm, useField } from 'vee-validate'
     import * as yup from 'yup'
+    import { RouterLink, useRoute, useRouter } from 'vue-router';
+    import { onMounted } from 'vue';
 
+    const router = useRouter()
     const validationSchema = yup.object({
-        title: yup.string().required('title is required').min(5, 'Name must be at least 5 characters'),
-        describe: yup.string().required('describe is required').min(10, 'Name must be at least 10 characters'),
-        detail: yup.string().required('detail is required').min(10, 'Name must be at least 10 characters'),
-        fileInput: yup.string().required('file is required'),
-        selectedLocation: yup.array().min(1, 'Please select at least one location.').required('location is required'),
-        publicity: yup.string().required('public is required'),
-        category: yup.string().required('category is required'),
-        DateSelect: yup.string().required('date is required'),
+        title:              yup.string().required('title is required').min(10, 'Must be at least 10 characters').max(100, 'Must not be over 100 characters'),
+        describe:           yup.string().required('describe is required').min(10, 'Must must be at least 10 characters').max(250, 'Must not be over 250 characters'),
+        detail:             yup.string().required('detail is required').min(10, 'Must be at least 10 characters').max(250, 'Must not be over 250 characters'),
+        fileInput:          yup.string().required('file is required'),
+        selectedLocation:   yup.array().min(1, 'Please select at least one location.').required('location is required'),
+        publicity:          yup.string().required('public is required'),
+        category:           yup.string().required('category is required'),
+        DateSelect:         yup.string().required('date is required'),
     });
 
     const { handleSubmit, errors } = useForm({
@@ -147,6 +150,10 @@
             DateSelect: '',
         },
         validationSchema,
+        validateOnMount: false, // Don't validate on mount
+        validateOnInput: true, // Validate on input
+        validateOnChange: true, // Validate on change
+        validateOnBlur: true, // Validate on blur
     });
 
     const { value: title } = useField('title')
@@ -169,7 +176,7 @@
     }
 
     const clearBox = () => {
-        alert('click')
+        alert('clearing...')
         title.value = ''
         describe.value = ''
         detail.value = ''
@@ -186,8 +193,8 @@
         DateSelect.value = ''
     }
 
-    const addBlog = async () => {
-        handleSubmit()
+    const addBlog = handleSubmit(() => {
+        alert('adding...')
         try {
             const formData = new FormData();
 
@@ -195,27 +202,24 @@
             	formData.append('thumbs', selectedFile.value)
 	        }
 
-	        formData.append("title",  title.value)
-            formData.append("des",  describe.value)
-            formData.append("detail",  detail.value)
-            formData.append("category",  category.value)
-            formData.append("public",  publicity.value)
-            formData.append("data_public",  DateSelect.value)
-
+	        formData.append("title", title.value)
+            formData.append("des", describe.value)
+            formData.append("detail", detail.value)
+            formData.append("category", category.value)
+            formData.append("public", publicity.value)
+            formData.append("data_public", DateSelect.value)
 	        selectedLocation.value.forEach(location => formData.append("position[]",  location))
  
-            const response = await fetch('http://localhost:8000/api/blogs/create', {
+            const response = fetch('http://localhost:8000/api/blogs/create', {
             	method: 'POST',
             	body: formData
             })
-	    
-	    clearBox()
-	    alert('Success!')
-        router.push('/');
+            router.push('/');
         } catch (error) {
-            alert('Error:', error)
+            alert('Error:', error);
         }
-    }
+    })
+    
 </script>
 
 <style scoped>

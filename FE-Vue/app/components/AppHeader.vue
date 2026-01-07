@@ -2,7 +2,7 @@
     <div class="grid-container">
         <div class="grid-item">
             <NuxtLink to="/">
-                <img src="./img/logo.png" style="width: 113px;">
+                <img src="../../img/logo.png" style="width: 113px;">
             </NuxtLink>
         </div>
         <div class="grid-item">
@@ -16,7 +16,7 @@
         display: grid;
         grid-template-columns: 1fr 5fr;
         gap: 0; 
-        width: 100vw;
+        width: 100%;
     }
 
     .grid-item {
