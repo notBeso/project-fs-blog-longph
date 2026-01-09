@@ -25,7 +25,12 @@ class BlogController
      */
     public function index()
     {
+        // official
         return Blog::all();
+
+        //pagination
+        // return response()->json(Blog::paginate(5));
+
     }
 
     /**
@@ -35,14 +40,6 @@ class BlogController
     {
         $blog = new Blog;
         $newFileName = null;
-
-        //1
-        // $thumbs = $request->thumbs;
-        // if(!is_null($thumbs)) {
-        //     $newFileName = Str::uuid()->toString() . '.' . $thumbs->extension();
-        //     Storage::disk('public')->put($newFileName, $thumbs->get());
-	    // }
-
 
         $blog->title = $request->title;
         $blog->des = $request->des;
@@ -85,15 +82,6 @@ class BlogController
             $blog->thumbs = null;
         }
 
-	    $newFileName = null;
-
-        //1
-        // $thumbs = $request->thumbs;
-        // if(!is_null($thumbs)) {
-        //     $newFileName = Str::uuid()->toString() . '.' . $thumbs->extension();
-        //     Storage::disk('public')->put($newFileName, $thumbs->get());
-	    // }
-        //2
         $newFileName = $this->checkThumbs($request);
 
         if(!is_null($newFileName)) {

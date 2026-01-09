@@ -28,3 +28,5 @@ Route::put('/blogs/{id}', [BlogController::class, 'update']);
 // delete item
 Route::delete('/blogs/{id}/delete', [BlogController::class, 'destroy']);
 
+//// PAGINATION
+// Route::get('/items', [ItemController::class, 'index']);
