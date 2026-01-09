@@ -4,7 +4,7 @@
         <div class="main-form-container" style="padding: 40px;">
             
             <form class="form-grid" @submit.prevent>
-                <label for="blog-tittle" style="text-align: left;">Title:</label>
+                <label for="blog-tittle" style="text-align: left;"><h1>Title:</h1></label>
                 <input class="search-bar" type="text" @keyup.enter="performSearch" placeholder="Search..." v-model="query" >
             </form>
             <button class="search-btn" type="button" @click="performSearch">Search</button>
@@ -96,7 +96,6 @@
 
     table {
         border-collapse: collapse;
-        /* max-height: 50px; */
         overflow: scroll;
         overflow-x: hidden;
     }

@@ -42,7 +42,7 @@
                 </span>
             </div>
 
-            {{ isRemoveThumbs }}
+            <!-- {{ isRemoveThumbs }} -->
             <form @submit.prevent>
                 <input
                     ref="fileInput"

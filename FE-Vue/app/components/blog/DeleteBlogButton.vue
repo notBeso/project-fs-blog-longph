@@ -18,7 +18,7 @@ const deleteItem = async() => {
                 }
                 catch (error) {
                         console.log(error)
-                        alert('Error deleting item:', error);
+                        alert('Error deleting item: deleted but still display', error);
                 }
         }
 }	

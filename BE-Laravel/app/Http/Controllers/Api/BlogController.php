@@ -26,10 +26,10 @@ class BlogController
     public function index()
     {
         // official
-        return Blog::all();
+        // return Blog::all();
 
         //pagination
-        // return response()->json(Blog::paginate(5));
+        return response()->json(Blog::paginate(2));
 
     }
 

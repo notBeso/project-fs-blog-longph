@@ -1,8 +1,11 @@
+ <!-- PAGINATION
+ PAGINATION
+ PAGINATION -->
 <template>
     <div class="main-content">
         <p>List Blog</p>
         <div class="main-form-container">
-            <table v-if="blogs.length" width="100%">
+            <table width="100%">
                 <thead>
                     <tr>
                         <th>Id</th>
@@ -16,7 +19,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="blog in blogs" :key="blog.id">
+                    <tr v-for="blog in blogs.data" :key="blog.id">
                         <td>{{ blog.id }}</td>
                         <td>{{ blog.title }}</td>
                         <td>{{ blog.category }}</td>
@@ -32,9 +35,10 @@
                     </tr>
                 </tbody>
             </table>
+            
             <!-- Pagination links -->
             <TailwindPagination
-            :data="laravelData "
+            :data='blogs'
             @pagination-change-page="getResults"
             />
         </div>
@@ -88,20 +92,22 @@
     const { $locationIdsToTexts, $getLocations } = useNuxtApp()
 
     const router = useRouter()
-    const blogs = ref((await axios.get('http://localhost:8000/api/blogs')).data)
+    // const blogs = ref((await axios.get('http://localhost:8000/api/blogs')).data)
     const locations = ref(await $getLocations())
 
-    const removeFromBlogs = (blogId) => {
-        blogs.value = blogs.value.filter((blog) => blog.id != blogId)
-    }
-
     //PAGINATION
-    const laravelData = ref({});
+    const blogs = ref({});
 
     const getResults = async (page = 1) => {
-    const response = await axios.get(`/api/blogs?page=${page}`);
-    laravelData.value = response.data;
+        const response = await axios.get(`http://localhost:8000/api/blogs?page=${page}`);
+        blogs.value = response.data;
     };
+
+    const removeFromBlogs = (blogId) => {
+        blogs.value = blogs.data.value.filter((blog) => blog.id != blogId)
+    }
+
+    
 
     onMounted(() => {
         getResults();
