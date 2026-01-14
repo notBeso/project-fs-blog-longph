@@ -3,25 +3,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import axios from 'axios'
+        import axios from 'axios'
 
-const nuxtApp = useNuxtApp()
-
-const { blogId, afterDeleteCallback } = defineProps(['blogId', 'afterDeleteCallback'])
- 
-const deleteItem = async() => {
-	if (confirm('Are you sure you want to delete this item?' + blogId)) {
-        	try {
-                        await axios.delete(`http://localhost:8000/api/blogs/${blogId}/delete`);
-                        afterDeleteCallback(blogId)
+        const { blogId, afterDeleteCallback } = defineProps(['blogId', 'afterDeleteCallback'])
+        
+        const deleteItem = async() => {
+                if (confirm('Are you sure you want to delete this item?' + blogId)) {
+                        try {
+                                await axios.delete(`http://localhost:8000/api/blogs/${blogId}/delete`);
+                                afterDeleteCallback(blogId)
+                        }
+                        catch (error) {
+                                console.log(error)
+                                alert('Error deleting item: deleted but still display', error);
+                        }
                 }
-                catch (error) {
-                        console.log(error)
-                        alert('Error deleting item: deleted but still display', error);
-                }
-        }
-}	
+        }	
 </script>
 
 <style scoped>

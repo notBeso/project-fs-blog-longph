@@ -12,6 +12,17 @@ class Blog extends Model
     public $timestamps = false;
     protected $appends = ['thumbs_url'];
 
+    protected $fillable = [
+        'title',
+        'des',
+        'detail',
+        'category',
+        'public',
+        'data_public',
+        'position',
+        'thumbs',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -25,7 +36,9 @@ class Blog extends Model
 
     protected function thumbsUrl() : Attribute {
     	return Attribute::make(
-		get: fn() => !is_null($this->thumbs) && Storage::disk('public')->exists($this->thumbs) ? asset('storage/' . $this->thumbs) : null,
-	);
+            get: fn() => !is_null($this->thumbs) && Storage::disk('public')->exists($this->thumbs) ? asset('storage/' . $this->thumbs) : null,
+        );
     }
+
+
 }

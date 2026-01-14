@@ -110,9 +110,7 @@
             </div>
             
         </div>
-        <!-- <button class="submit-btn" type="submit">{{ store.isEdit ? 'Update' : 'Create' }}</button> -->
         <button class="submit-btn" type="submit" @click="addBlog">Create</button>
-        
         <button class="clear-btn" @click="clearBox">Clear</button>
     </div>
 </template>
@@ -138,7 +136,6 @@
     });
 
     const { handleSubmit, errors } = useForm({
-        
         initialValues: {
             title: '',
             describe: '',
@@ -150,10 +147,10 @@
             DateSelect: '',
         },
         validationSchema,
-        validateOnMount: false, // Don't validate on mount
-        validateOnInput: true, // Validate on input
-        validateOnChange: true, // Validate on change
-        validateOnBlur: true, // Validate on blur
+        validateOnMount: false,
+        validateOnInput: true,
+        validateOnChange: true,
+        validateOnBlur: true, 
     });
 
     const { value: title } = useField('title')
@@ -184,7 +181,6 @@
         if (fileInput.value) {
             fileInput.value.value = ''
         }
-
         selectedFile.value = null
 
         publicity.value = ''
@@ -219,7 +215,6 @@
             alert('Error:', error);
         }
     })
-    
 </script>
 
 <style scoped>

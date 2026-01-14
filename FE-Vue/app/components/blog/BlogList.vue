@@ -32,8 +32,6 @@
                     </tr>
                 </tbody>
             </table>
-            
-            <!-- Pagination links -->
             <TailwindPagination
             :data='blogs'
             @pagination-change-page="getResults"
@@ -41,6 +39,37 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import axios from 'axios'
+    import { TailwindPagination } from 'laravel-vue-pagination';
+    import { ref, onMounted } from 'vue'
+    import { useRouter } from 'vue-router'
+
+    const { $locationIdsToTexts, $getLocations } = useNuxtApp()
+
+    const router = useRouter()
+    const locations = ref(await $getLocations())
+
+    const blogs = ref({});
+
+    const getResults = async (page = 1) => {
+        const response = await axios.get(`http://localhost:8000/api/blogs?page=${page}`);
+        blogs.value = response.data;
+    };
+
+    const removeFromBlogs = (blogId) => {
+        alert('click')
+        test = blogs.data;
+        test = test.filter((blog) => blog.id != blogId)
+        alert('ok')
+        // router.go(0);
+    }
+
+    onMounted(() => {
+        getResults();
+    });
+</script>
 
 <style scoped>
     .main-content {
@@ -79,36 +108,3 @@
         gap: 0;
     }
 </style>
-
-<script setup lang="ts">
-    import axios from 'axios'
-    import { TailwindPagination } from 'laravel-vue-pagination';
-    import { ref, onMounted } from 'vue'
-    import { useRouter } from 'vue-router'
-
-    const { $locationIdsToTexts, $getLocations } = useNuxtApp()
-
-    const router = useRouter()
-    const locations = ref(await $getLocations())
-
-    //PAGINATION
-    const blogs = ref({});
-
-    const getResults = async (page = 1) => {
-        const response = await axios.get(`http://localhost:8000/api/blogs?page=${page}`);
-        blogs.value = response.data;
-    };
-
-    const removeFromBlogs = (blogId) => {
-        // blogs.value = blogs.data.value.filter((blog) => blog.id != blogId)
-        // alert('ok')
-        router.go(0);
-    }
-
-    
-
-    onMounted(() => {
-        getResults();
-    });
-
-</script>
