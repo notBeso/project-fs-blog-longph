@@ -59,16 +59,15 @@
     };
 
     const removeFromBlogs = (blogId) => {
-        alert('click')
-        test = blogs.data;
-        test = test.filter((blog) => blog.id != blogId)
-        alert('ok')
-        // router.go(0);
+        // blogs.value = blogs.data.value.filter((blog) => blog.id != blogId)
+        // alert('ok')
+        router.go(0);
     }
 
     onMounted(() => {
         getResults();
     });
+
 </script>
 
 <style scoped>
