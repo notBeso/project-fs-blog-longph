@@ -27,4 +27,3 @@ Route::put('/blogs/{id}', [BlogController::class, 'update']);
 
 // delete item
 Route::delete('/blogs/{id}/delete', [BlogController::class, 'destroy']);
-

@@ -4,7 +4,7 @@
         <div class="main-form-container" style="padding: 40px;">
             
             <form class="form-grid" @submit.prevent>
-                <label for="blog-tittle" style="text-align: left;">Title:</label>
+                <label for="blog-tittle" style="text-align: left;"><h1>Title:</h1></label>
                 <input class="search-bar" type="text" @keyup.enter="performSearch" placeholder="Search..." v-model="query" >
             </form>
             <button class="search-btn" type="button" @click="performSearch">Search</button>
@@ -45,6 +45,31 @@
     </div>
 
 </template>
+
+<script setup lang="ts">
+    import axios from 'axios';
+    import { debounce } from 'lodash';
+    import { ref } from 'vue'
+
+    const { $locationIdsToTexts, $getLocations } = useNuxtApp()
+
+    const locations = await $getLocations()
+    const query = ref('')
+    const results = ref((await axios.get('http://localhost:8000/api/blogs')).data)
+
+    const performSearch = debounce(async () => {
+        if(!query.value) {
+            results.value = []
+            return
+        }
+
+        results.value = (await axios.get(`http://localhost:8000/api/blogs/search?q=${encodeURIComponent(query.value)}`)).data
+    }, 300)
+
+    const removeFromBlogs = (blogId) => {
+        results.value = results.value.filter((blog) => blog.id != blogId)	
+    }
+</script>
 
 <style scoped>
     .form-grid {
@@ -96,7 +121,6 @@
 
     table {
         border-collapse: collapse;
-        /* max-height: 50px; */
         overflow: scroll;
         overflow-x: hidden;
     }
@@ -113,28 +137,3 @@
         gap: 0;
     }
 </style>
-
-<script setup lang="ts">
-import axios from 'axios';
-import { debounce } from 'lodash';
-import { ref } from 'vue'
-
-const { $locationIdsToTexts, $getLocations } = useNuxtApp()
-
-const locations = await $getLocations()
-const query = ref('')
-const results = ref((await axios.get('http://localhost:8000/api/blogs')).data)
-
-const performSearch = debounce(async () => {
-	if(!query.value) {
-		results.value = []
-		return
-	}
-
-	results.value = (await axios.get(`http://localhost:8000/api/blogs/search?q=${encodeURIComponent(query.value)}`)).data
-}, 300)
-
-const removeFromBlogs = (blogId) => {
-	results.value = results.value.filter((blog) => blog.id != blogId)	
-}
-</script>

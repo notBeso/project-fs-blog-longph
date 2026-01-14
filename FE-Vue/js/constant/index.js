@@ -37,13 +37,6 @@ const routes = [
         component: EditPage,
         props: true
         },
-
-        // TEST
-        {
-        path: '/test',
-        name: 'test',
-        component: TestPage,
-        },
     ],
     },
 ];

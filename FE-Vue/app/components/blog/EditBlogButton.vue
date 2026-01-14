@@ -1,14 +1,15 @@
 <template>
 	<button class="edit-btn" @click="goDetail">Edit</button>
 </template>
+
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+        import { useRouter } from 'vue-router'
 
-const router = useRouter()
+        const router = useRouter()
 
-const { blogId } = defineProps(['blogId'])
+        const { blogId } = defineProps(['blogId'])
 
-const goDetail= () => router.push(`/edit/${blogId}`)
+        const goDetail= () => router.push(`/edit/${blogId}`)
 </script>
 
 <style scoped>

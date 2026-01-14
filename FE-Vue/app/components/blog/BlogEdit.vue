@@ -42,7 +42,7 @@
                 </span>
             </div>
 
-            {{ isRemoveThumbs }}
+            <!-- {{ isRemoveThumbs }} -->
             <form @submit.prevent>
                 <input
                     ref="fileInput"
@@ -220,12 +220,9 @@
             formData.append("isRemoveThumbs", isRemoveThumbs.value)
 
             if(isRemoveThumbs.value && selectedFile.value) {
-                // alert('add')
                 formData.append("thumbs", selectedFile.value)
             }else if(isRemoveThumbs.value && !selectedFile.value){
-                // alert('del')
             } else{
-                // alert('keep')
                 formData.append('thumbs', fileInput.value)
             }
             item.value = ( axios.put(`http://localhost:8000/api/blogs/${blogId}`, formData)).data;

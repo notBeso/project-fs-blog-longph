@@ -2,7 +2,7 @@
     <div class="main-content">
         <p>List Blog</p>
         <div class="main-form-container">
-            <table v-if="blogs.length" width="100%">
+            <table width="100%">
                 <thead>
                     <tr>
                         <th>Id</th>
@@ -16,7 +16,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="blog in blogs" :key="blog.id">
+                    <tr v-for="blog in blogs.data" :key="blog.id">
                         <td>{{ blog.id }}</td>
                         <td>{{ blog.title }}</td>
                         <td>{{ blog.category }}</td>
@@ -32,9 +32,43 @@
                     </tr>
                 </tbody>
             </table>
+            <TailwindPagination
+            :data='blogs'
+            @pagination-change-page="getResults"
+            />
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import axios from 'axios'
+    import { TailwindPagination } from 'laravel-vue-pagination';
+    import { ref, onMounted } from 'vue'
+    import { useRouter } from 'vue-router'
+
+    const { $locationIdsToTexts, $getLocations } = useNuxtApp()
+
+    const router = useRouter()
+    const locations = ref(await $getLocations())
+
+    const blogs = ref({});
+
+    const getResults = async (page = 1) => {
+        const response = await axios.get(`http://localhost:8000/api/blogs?page=${page}`);
+        blogs.value = response.data;
+    };
+
+    const removeFromBlogs = (blogId) => {
+        // blogs.value = blogs.data.value.filter((blog) => blog.id != blogId)
+        // alert('ok')
+        router.go(0);
+    }
+
+    onMounted(() => {
+        getResults();
+    });
+
+</script>
 
 <style scoped>
     .main-content {
@@ -73,21 +107,3 @@
         gap: 0;
     }
 </style>
-
-<script setup lang="ts">
-import axios from 'axios'
-
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-
-const { $locationIdsToTexts, $getLocations } = useNuxtApp()
-
-const router = useRouter()
-const blogs = ref((await axios.get('http://localhost:8000/api/blogs')).data)
-const locations = ref(await $getLocations())
-
-const goDetail= (blogId) => router.push(`/edit/${blogId}`)
-const removeFromBlogs = (blogId) => {
-	blogs.value = blogs.value.filter((blog) => blog.id != blogId)
-}
-</script>

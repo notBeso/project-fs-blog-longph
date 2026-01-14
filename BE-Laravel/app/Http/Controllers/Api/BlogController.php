@@ -7,55 +7,42 @@ use App\Models\Blog;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-// use Illuminate\Support\Facades\Redirect;
+use App\DTOs\BlogDTO;
+use App\DTOs\CreateBlogDTO;
+use App\Http\Requests\BlogRequest;
 
 class BlogController
 {
-    public function checkThumbs(Request $request) {
-        $thumbs = $request->thumbs;
-        $newFileName = null;
-        if(!is_null($thumbs)) {
-            $newFileName = Str::uuid()->toString() . '.' . $thumbs->extension();
-            Storage::disk('public')->put($newFileName, $thumbs->get());
-	    }
-        return $newFileName;
-    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Blog::all();
+        return response()->json(Blog::paginate(10));
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(BlogRequest $request)
     {
-        $blog = new Blog;
-        $newFileName = null;
-
-        //1
-        // $thumbs = $request->thumbs;
-        // if(!is_null($thumbs)) {
-        //     $newFileName = Str::uuid()->toString() . '.' . $thumbs->extension();
-        //     Storage::disk('public')->put($newFileName, $thumbs->get());
-	    // }
-
-
-        $blog->title = $request->title;
-        $blog->des = $request->des;
-        $blog->detail = $request->detail;
-        $blog->category = $request->category;
-        $blog->public = $request->public;
-        $blog->data_public = $request->data_public;
-        $blog->position = $request->position;
-	    $blog->thumbs = $this->checkThumbs($request);;
-
-        $blog->save();
-
-        return $blog;
+        $dto = BlogDTO::fromRequest($request);
+        $imagePath = $dto->handleImageUpload();
+        $blog = Blog::create([
+            'title' => $dto->title,
+            'des' => $dto->des,
+            'detail' => $dto->detail,
+            'category' => $dto->category,
+            'public' => $dto->public,
+            'data_public' => $dto->data_public,
+            'position' => $dto->position,
+            'thumbs' => $imagePath,
+        ]);
+        return response()->json([
+            'message' => 'Blog created successfully',
+            'data' => $blog
+        ], 201);
     }
 
     /**
@@ -69,40 +56,32 @@ class BlogController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BlogRequest $request, string $id)
     {
         $blog = Blog::where('id', $id)->first();
-
-        $blog->title = $request->title;
-        $blog->des = $request->des;
-        $blog->detail = $request->detail;
-        $blog->category = $request->category;
-        $blog->public = $request->public;
-        $blog->data_public = $request->data_public;
-        $blog->position = $request->position;
-
+        $dto = BlogDTO::fromRequest($request);
         if($request->isRemoveThumbs) {
-            $blog->thumbs = null;
+            $imagePath = $dto->handleImageUpload();
+        }else{
+            $imagePath = $blog->thumbs;
         }
 
-	    $newFileName = null;
+        $updateData = [
+            'title' => $dto->title,
+            'des' => $dto->des,
+            'detail' => $dto->detail,
+            'category' => $dto->category,
+            'public' => $dto->public,
+            'data_public' => $dto->data_public,
+            'position' => $dto->position,
+            'thumbs' => $imagePath,
+        ];
+        $blog->update($updateData);
 
-        //1
-        // $thumbs = $request->thumbs;
-        // if(!is_null($thumbs)) {
-        //     $newFileName = Str::uuid()->toString() . '.' . $thumbs->extension();
-        //     Storage::disk('public')->put($newFileName, $thumbs->get());
-	    // }
-        //2
-        $newFileName = $this->checkThumbs($request);
-
-        if(!is_null($newFileName)) {
-            $blog->thumbs = $newFileName;
-        }
-
-        $blog->save();
-
-        return $blog;
+        return response()->json([
+            'message' => 'Blog updated successfully',
+            'data' => $blog->fresh()
+        ]);
     }
 
     /**
@@ -115,7 +94,6 @@ class BlogController
             return redirect()->back()->withErrors(['message' => 'Blog not found.']);
         }
         $blog -> forceDelete();
-        // return Redirect::route('posts.index')->with('success', 'Blog deleted successfully!');
     }
 
     public function search(Request $request)
@@ -142,6 +120,4 @@ class BlogController
             [ "value" => '4', "label" => 'Thời Sự' ],
 	    ];
     }
-
-
 }
